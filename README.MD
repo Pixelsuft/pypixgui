@@ -21,4 +21,5 @@ because I can't find transparent color function in pysdl2<br />
 Windows - Works<br />
 Mac OS - I'm don't know...<br />
 Linux - Works: <br />
-![LinuxScreenShot](https://user-images.githubusercontent.com/68371847/112779851-cffb7700-9071-11eb-990b-51aff305ef7b.png)
+![KaliLinuxScreenShot](https://user-images.githubusercontent.com/68371847/113549046-e29a2100-961a-11eb-8d6e-eaae764b5cfc.png)<br />
+![UbuntuLinuxScreenShot](https://user-images.githubusercontent.com/68371847/113549046-e29a2100-961a-11eb-8d6e-eaae764b5cfc.png)
