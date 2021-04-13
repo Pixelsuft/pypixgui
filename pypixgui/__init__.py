@@ -165,7 +165,7 @@ class NewButton:
             self.text = text
             self.text_lab = NewLabel(self.id + '__ignorez', window, pos=(0, 0))
             self.text_lab.font = 'tahoma.ttf'
-            self.text_lab.text = 'Pgfegrg'
+            self.text_lab.text = text
             self.text_lab.font_size = 13
             self.text_lab.color = (0, 0, 0)
             self.text_lab.update_cache()
