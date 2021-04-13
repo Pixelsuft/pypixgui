@@ -22,7 +22,7 @@ elif os_type == 'posix':
 
 setup(
     name='pypixgui',
-    version='0.1.3',
+    version='0.1.4',
     author='Pixelsuft',
     description='Python GUI Package.',
     keywords='pypixgui',

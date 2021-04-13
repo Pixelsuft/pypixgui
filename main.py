@@ -4,6 +4,8 @@ import io
 
 MainWindow = create_window()
 MainWindow.set_size(f'{800}x{600}')
+MainWindow.min_width = 640
+MainWindow.min_height = 480
 MainWindow.set_title('Test')
 MainWindow.use_border_radius = True
 MainWindow.set_border('themed')
@@ -63,7 +65,7 @@ def on_create():
     if not os.access('pixelsuft.png', os.F_OK):
         download_file('https://github.com/Pixelsuft/pypixgui/raw/main/pixelsuft.png', 'pixelsuft.png')
     NewImage('image1', MainWindow, "pixelsuft.png", pos=(100, 100))
-    NewButton('button1', MainWindow, pos=(200, 200), size=(100, 40))
+    NewButton('button1', MainWindow, pos=(200, 200), size=(100, 40), text='xdd')
     a = NewLabel('label1', MainWindow, pos=(100, 400))
     a.font = 'SEGOESCB.TTF'.lower()
     a.text = 'Pixelsuft LOL :DD;DDD'

@@ -2,7 +2,10 @@ import os
 from sys import exit as exit_
 from time import sleep as time_sleep
 from urllib.request import urlretrieve as download_file
-from pynput import mouse as py_mouse
+try:
+    from pynput import mouse as py_mouse
+except ImportError:
+    py_mouse = None
 from pyautogui import position as get_real_mouse_pos
 from pyautogui import size as get_screen_size
 from mss import mss as mss_sct
@@ -143,7 +146,8 @@ class NewButton:
         self.height = size[1]
         self.enabled = True
         self.mouse_on_me = False
-        self.text = text
+        self.text = ''
+        self.text_lab = None
         self.border_color = sdl2.SDL_Color(173, 173, 173)
         self.color = sdl2.SDL_Color(221, 221, 221)
         self.hover_border_color = sdl2.SDL_Color(0, 120, 215)
@@ -152,8 +156,23 @@ class NewButton:
         self.click_color = sdl2.SDL_Color(205, 229, 247)
         self.disabled_border_color = sdl2.SDL_Color(191, 191, 191)
         self.disabled_color = sdl2.SDL_Color(204, 204, 204)
+        self.set_text(text, window)
         window.objects.append(self)
         super(NewButton, self).__init__()
+
+    def set_text(self, text, window):
+        if not self.text == text and text:
+            self.text = text
+            self.text_lab = NewLabel(self.id + '__ignorez', window, pos=(0, 0))
+            self.text_lab.font = 'tahoma.ttf'
+            self.text_lab.text = 'Pgfegrg'
+            self.text_lab.font_size = 13
+            self.text_lab.color = (0, 0, 0)
+            self.text_lab.update_cache()
+            self.text_lab.open_stream(window)
+            self.text_lab.left = int(self.left + self.width / 2 - self.text_lab.width / 2)
+            self.text_lab.top = int(self.top + self.height / 2 - self.text_lab.height / 2)
+            self.text_lab.draw(window)
 
     def draw(self, window, ignore_out=False):
         if not ignore_out:
@@ -184,6 +203,8 @@ class NewButton:
             color[1],
             (window.get_left(self.left) + 1, window.get_top(self.top) + 1, self.width - 2, self.height - 2)
         )
+        if self.text_lab:
+            self.text_lab.draw(window)
 
 
 class NewEmpty:
@@ -209,10 +230,10 @@ class NewLabel:
         self.width = 0
         self.height = 0
         self.text = 'Hallow, Worlds!'
-        self.font = 'arial.ttf'
+        self.font = 'tahoma.ttf'
         self.stream = None
-        self.font_size = 25
-        self.color = (0, 255, 0)
+        self.font_size = 8
+        self.color = (0, 0, 0)
         self.img_path = None
         self.mouse_on_me = False
         self.enabled = True
@@ -248,7 +269,9 @@ class NewLabel:
 
     def draw(self, window):
         r = window.factory.create_sprite_render_system(window.window)
-        r.render(self.stream, x=self.left, y=self.top)
+        r.render(
+            self.stream, x=window.get_left(self.left), y=window.get_top(self.top)
+        )
 
 
 class NewWindow:
@@ -320,10 +343,11 @@ class NewWindow:
             'minimize': 0
         }
         self.set_cursor(self.default_cursor)
-        self.py_mouse_listener = py_mouse.Listener(
-            on_click=self.python_mouse_event,
-        )
-        self.py_mouse_listener.start()
+        if py_mouse:
+            self.py_mouse_listener = py_mouse.Listener(
+                on_click=self.python_mouse_event,
+            )
+            self.py_mouse_listener.start()
         super(NewWindow, self).__init__(**kwargs)
 
     def center_window(self):
@@ -827,7 +851,8 @@ class NewWindow:
                 self.mouse_is_moving = True
                 cur_obj = 'self'
                 for i in self.objects:
-                    if i.left < self.mouse_x < i.left + i.width and i.top < self.mouse_y < i.top + i.height:
+                    if not i.id.endswith('__ignorez') \
+                            and i.left < self.mouse_x < i.left + i.width and i.top < self.mouse_y < i.top + i.height:
                         cur_obj = i.id
                 self.cur_obj = cur_obj
                 if self.use_border_radius:
@@ -843,12 +868,14 @@ class NewWindow:
                 self.on_mouse_enter('self', (pos_x, pos_y))
         for i in self.objects:
             if i.mouse_on_me:
-                if i.enabled and not i.left < self.mouse_x < i.left + i.width or not\
+                if not i.id.endswith('__ignorez') \
+                    and i.enabled and not i.left < self.mouse_x < i.left + i.width or not\
                         i.top < self.mouse_y < i.top + i.height:
                     i.mouse_on_me = False
                     self.on_mouse_leave(i.id, (self.mouse_x, self.mouse_y))
             else:
-                if i.enabled and i.left < self.mouse_x < i.left + i.width and i.top < self.mouse_y < i.top + i.height:
+                if not i.id.endswith('__ignorez') \
+                        and i.enabled and i.left < self.mouse_x < i.left + i.width and i.top < self.mouse_y < i.top + i.height:
                     i.mouse_on_me = True
                     self.on_mouse_enter(i.id, (self.mouse_x, self.mouse_y))
         self.last_real_x, self.last_real_y = real_pos_x, real_pos_y
@@ -1074,7 +1101,8 @@ class NewWindow:
         if self.mouse_in_window:
             cur_obj = 'self'
             for i in self.objects:
-                if i.left < self.mouse_x < i.left + i.width and i.top < self.mouse_y < i.top + i.height:
+                if not i.id.endswith('__ignorez') \
+                        and i.left < self.mouse_x < i.left + i.width and i.top < self.mouse_y < i.top + i.height:
                     cur_obj = i.id
             self.clicked_object = cur_obj
             self.on_mouse_down(cur_obj, (self.mouse_x, self.mouse_y))

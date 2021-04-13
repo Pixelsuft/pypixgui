@@ -17,7 +17,7 @@ sudo pip3 install pypixgui
 - Windows XP theme border radius is 0,<br />
 because I can't find transparent color function in pysdl2<br />
 - Linux cursor not changing<br />
-- Not Works On Ubuntu
+- On Linux works only with sudo
 # Testing
 Windows - Works<br />
 Mac OS - I'm don't know...<br />
